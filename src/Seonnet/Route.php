@@ -4,7 +4,7 @@ namespace Seonnet;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
-class Route extends Model
+class Route extends \Elegant
 {
 
   /**
@@ -42,6 +42,18 @@ class Route extends Model
   public function getPatternAttribute($pattern)
   {
     return '#'.$pattern.'#';
+  }
+
+  /**
+   * Get the Route's pattern
+   *
+   * @param string $pattern
+   *
+   * @return string
+   */
+  public function setPatternAttribute($pattern)
+  {
+    return trim($pattern, '#');
   }
 
   /**
@@ -83,5 +95,4 @@ class Route extends Model
   {
     $this->attributes['meta'] = json_encode($meta);
   }
-
 }
