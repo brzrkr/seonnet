@@ -53,7 +53,7 @@ class Route extends \Elegant
    */
   public function setPatternAttribute($pattern)
   {
-    return trim($pattern, '#');
+    $this->attributes['pattern'] = trim($pattern, '#');
   }
 
   /**
