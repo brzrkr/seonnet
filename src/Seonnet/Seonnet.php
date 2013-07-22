@@ -51,21 +51,6 @@ class Seonnet
   ////////////////////////////////////////////////////////////////////
 
   /**
-   * Returns the slug for an URL
-   *
-   * @param string $url The URL
-   *
-   * @return string The slug
-   */
-  public function getSlug($url)
-  {
-    $route = $this->getRoute($url);
-    $slug  = $route ? $route->slug : $url;
-
-    return $slug;
-  }
-
-  /**
    * Get the page's title
    *
    * @param string $fallback A fallback title
@@ -87,8 +72,7 @@ class Seonnet
    */
   public function meta($route = null)
   {
-    if (!$route) $route = $this->getCurrentUrl();
-    $route = $this->getRoute($route);
+    if (!$route) $route = $this->getCurrentRoute();
     if (!$route) return;
 
     return $route->metaTags;
@@ -118,9 +102,13 @@ class Seonnet
 
     // Search for a Route whose pattern matches the current URL
     foreach ($routes as $route) {
-      if (preg_match($route->pattern, $url) or
-          $url == $route->slug or
-          $url == $route->name) {
+      if ($url == $route->slug or
+          $url == $route->name or
+          $url == $route->url or
+          ($route->pattern != "##" && preg_match($route->pattern, $url))) {
+
+        \Log::debug(print_r($route, true));
+
         $this->matchedRoutes[$url] = $route;
 
         return $route;
@@ -145,9 +133,7 @@ class Seonnet
    */
   protected function getCurrentRoute()
   {
-    $route = $this->getCurrentUrl();
-
-    return $this->getRoute($route);
+    return $this->getRoute(\Illuminate\Support\Facades\Route::getCurrentRoute());
   }
 
   ////////////////////////////////////////////////////////////////////
