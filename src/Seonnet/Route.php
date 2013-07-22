@@ -57,42 +57,23 @@ class Route extends \Elegant
   }
 
   /**
-   * Get the meta tags as an array
-   *
-   * @param string $meta
-   *
-   * @return array
-   */
-  public function getMetaAttribute($meta)
-  {
-    return json_decode($meta, true);
-  }
-
-  /**
    * Get the meta tags as HTML tags
    *
    * @return string
    */
   public function getMetaTagsAttribute()
   {
-    $tags = $this->meta;
-    if (!$tags) return;
+    $meta = [
+      'description' => $this->description,
+      'keywords' => $this->keywords
+    ];
 
     // Format tags
-    foreach ($tags as $name => &$tag) {
+    foreach ($meta as $name => &$tag) {
       $tag = '<meta name="' .$name. '" content="' .$tag. '">';
     }
 
-    return implode($tags);
+    return implode($meta);
   }
 
-  /**
-   * Set the Route's meta tags
-   *
-   * @param array $meta
-   */
-  public function setMetaAttribute($meta)
-  {
-    $this->attributes['meta'] = json_encode($meta);
-  }
 }
