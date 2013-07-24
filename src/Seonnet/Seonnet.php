@@ -89,41 +89,33 @@ class Seonnet
    *
    * @return Route
    */
-  public function getRoute($url)
+  public function getRoute($route)
   {
     if (!$this->tableExists()) return;
-
+      
+    $url = $route->getPath();
+    $action = $route->getAction();
+    $route_name = $route->getParameter('_route');
+    
     // Return Route in cache if any
     if (isset($this->matchedRoutes[$url])) {
       return $this->matchedRoutes[$url];
     }
 
+    
     $routes = Route::all();
 
     // Search for a Route whose pattern matches the current URL
     foreach ($routes as $route) {
-      if ($url == $route->slug or
-          $url == $route->name or
-          $url == $route->url or
+      if ((!empty($route->action) && $action == $route->action) or
+          (!empty($route->name) && $route_name == $route->name) or
           ($route->pattern != "##" && preg_match($route->pattern, $url))) {
-
-        \Log::debug(print_r($route, true));
 
         $this->matchedRoutes[$url] = $route;
 
         return $route;
       }
     }
-  }
-
-  /**
-   * Get the current URL
-   *
-   * @return string
-   */
-  protected function getCurrentUrl()
-  {
-    return $this->app['request']->path();
   }
 
   /**
