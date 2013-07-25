@@ -91,7 +91,7 @@ class Seonnet
    */
   public function getRoute($route)
   {
-    if (!$this->tableExists()) return;
+    //if (!$this->tableExists()) return;
       
     $url = $route->getPath();
     $action = $route->getAction();
@@ -103,7 +103,9 @@ class Seonnet
     }
 
     
-    $routes = Route::all();
+    $routes = \Cache::remember('all-routes', 60, function() {
+      return Route::all();
+    });
 
     // Search for a Route whose pattern matches the current URL
     foreach ($routes as $route) {
