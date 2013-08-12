@@ -89,13 +89,13 @@ class Seonnet
    *
    * @return Route
    */
-  public function getRoute($route)
+  public function getRoute($currentRoute)
   {
     //if (!$this->tableExists()) return;
       
-    $url = $route->getPath();
-    $action = $route->getAction();
-    $route_name = $route->getParameter('_route');
+    $url = $currentRoute->getPath();
+    $action = $currentRoute->getAction();
+    $route_name = $currentRoute->getParameter('_route');
     
     // Return Route in cache if any
     if (isset($this->matchedRoutes[$url])) {
@@ -109,9 +109,22 @@ class Seonnet
 
     // Search for a Route whose pattern matches the current URL
     foreach ($routes as $route) {
-      if ((!empty($route->action) && $action == $route->action) or
-          (!empty($route->name) && $route_name == $route->name) or
-          ($route->pattern != "##" && preg_match($route->pattern, $url))) {
+      $match = false;
+      
+      // check if the current route matches our seo route's action rule
+      if(!empty($route->action) && $currentRoute->getAction() == $route->action)
+        $match = true;
+      
+      // loop through each of the current route parameters and check for match on our pattern
+      foreach($currentRoute->getParameters() as $param) {
+        if(!empty($route->name) && $param == $route->name)
+          $match = true;
+        
+        if($route->pattern != "##" && preg_match($route->pattern, $param) === 1)
+          $match = true;
+      }
+      
+      if ($match) {
 
         $this->matchedRoutes[$url] = $route;
 
