@@ -122,6 +122,7 @@ class Seonnet
 
       // \Log::debug(print_r($currentRoute->getParameters(), true));
 
+      \Log::debug(\Route::currentRouteName());
       if(\Route::currentRouteName() == $route->name) {
         $match = true;
       }
