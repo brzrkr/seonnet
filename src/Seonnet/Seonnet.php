@@ -92,17 +92,16 @@ class Seonnet
   public function getRoute($currentRoute)
   {
     //if (!$this->tableExists()) return;
-      
+
     $url = $currentRoute->getPath();
     $action = $currentRoute->getAction();
     $route_name = $currentRoute->getParameter('_route');
-    
+
     // Return Route in cache if any
     if (isset($this->matchedRoutes[$url])) {
       return $this->matchedRoutes[$url];
     }
 
-    
     $routes = \Cache::remember('all-routes', 60, function() {
       return Route::all();
     });
@@ -110,20 +109,35 @@ class Seonnet
     // Search for a Route whose pattern matches the current URL
     foreach ($routes as $route) {
       $match = false;
-      
+
       // check if the current route matches our seo route's action rule
-      if(!empty($route->action) && $currentRoute->getAction() == $route->action)
+      if(!empty($route->action) && $currentRoute->getAction() == $route->action) {
         $match = true;
-      
+      }
+
+      // \Log::debug('Name: '.$route->name);
+      // \Log::debug('Pattern: '.$route->pattern);
+      // \Log::debug('Action: '.$route->action);
+
+
+      // \Log::debug(print_r($currentRoute->getParameters(), true));
+
+      if(\Route::currentRouteName() == $route->name) {
+        $match = true;
+      }
+
       // loop through each of the current route parameters and check for match on our pattern
       foreach($currentRoute->getParameters() as $param) {
-        if(!empty($route->name) && $param == $route->name)
+        if(!empty($route->name) && $param == $route->name) {
           $match = true;
-        
-        if($route->pattern != "##" && preg_match($route->pattern, $param) === 1)
+        }
+
+        if($route->pattern != "##" && (preg_match($route->pattern, $param) === 1 || preg_match($route->pattern, $currentRoute->getPath()) === 1)) {
           $match = true;
+        }
       }
-      
+
+
       if ($match) {
 
         $this->matchedRoutes[$url] = $route;
