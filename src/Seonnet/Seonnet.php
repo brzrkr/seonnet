@@ -59,7 +59,7 @@ class Seonnet
    */
   public function title($fallback = null)
   {
-    if (!$route) $route = $this->getCurrentRoute();
+    $route = $this->getCurrentRoute();
     if(!$route) return $fallback;
 
     return $route->title;
@@ -67,7 +67,7 @@ class Seonnet
 
   public function image($fallback = null)
   {
-    if (!$route) $route = $this->getCurrentRoute();
+    $route = $this->getCurrentRoute();
     if(!$route) return $fallback;
 
     return $route->image;
