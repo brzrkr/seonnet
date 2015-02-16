@@ -59,10 +59,18 @@ class Seonnet
    */
   public function title($fallback = null)
   {
-    $route = $this->getCurrentRoute();
+    if (!$route) $route = $this->getCurrentRoute();
     if(!$route) return $fallback;
 
     return $route->title;
+  }
+
+  public function image($fallback = null)
+  {
+    if (!$route) $route = $this->getCurrentRoute();
+    if(!$route) return $fallback;
+
+    return $route->image;
   }
 
   /**
